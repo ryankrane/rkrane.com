@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RK Labs</title>
+    <meta name="description" content="RK Labs">
+    <meta name="theme-color" content="#000000">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23000'/><text x='50' y='68' font-size='52' fill='white' text-anchor='middle' font-family='monospace' font-weight='300'>RK</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            overflow: hidden;
+            cursor: crosshair;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .vignette {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(0,0,0,0.5) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .title {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            color: #fff;
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 300;
+            font-size: clamp(2rem, 6vw, 5rem);
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            user-select: none;
+            pointer-events: none;
+            white-space: nowrap;
+            animation: glow 4s ease-in-out infinite alternate;
+            will-change: text-shadow;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow:
+                    0 0 30px rgba(255, 255, 255, 0.08),
+                    0 0 60px rgba(255, 255, 255, 0.04);
+            }
+            to {
+                text-shadow:
+                    0 0 40px rgba(255, 255, 255, 0.15),
+                    0 0 80px rgba(255, 255, 255, 0.06),
+                    0 0 120px rgba(255, 255, 255, 0.02);
+            }
+        }
+
+        .grain {
+            position: fixed;
+            inset: -100%;
+            width: 300%;
+            height: 300%;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.03;
+            filter: url(#noiseFilter);
+        }
+    </style>
+</head>
+<body>
+    <svg style="display:none">
+        <filter id="noiseFilter">
+            <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="4" stitchTiles="stitch"/>
+            <feColorMatrix type="saturate" values="0"/>
+        </filter>
+    </svg>
+
+    <canvas id="particles"></canvas>
+    <div class="vignette"></div>
+    <div class="grain"></div>
+    <div class="title">RK Labs</div>
+
+    <script>
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        const title = document.querySelector('.title');
+
+        let width, height;
+        let particles = [];
+        let mouse = { x: null, y: null };
+        let animId;
+
+        const CONNECTION_DIST = 150;
+        const CONNECTION_DIST_SQ = CONNECTION_DIST * CONNECTION_DIST;
+        const MOUSE_RADIUS = 200;
+        const MOUSE_RADIUS_SQ = MOUSE_RADIUS * MOUSE_RADIUS;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        function createParticle() {
+            return {
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4,
+                r: Math.random() * 1.2 + 0.4,
+                o: Math.random() * 0.4 + 0.2
+            };
+        }
+
+        function init() {
+            resize();
+            const count = width < 600 ? 50 : width < 1024 ? 80 : 110;
+            particles = [];
+            for (let i = 0; i < count; i++) {
+                particles.push(createParticle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            const len = particles.length;
+
+            // Update positions
+            for (let i = 0; i < len; i++) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < -10) p.x = width + 10;
+                else if (p.x > width + 10) p.x = -10;
+                if (p.y < -10) p.y = height + 10;
+                else if (p.y > height + 10) p.y = -10;
+            }
+
+            // Draw connections between particles
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i < len; i++) {
+                const a = particles[i];
+                for (let j = i + 1; j < len; j++) {
+                    const b = particles[j];
+                    const dx = a.x - b.x;
+                    const dy = a.y - b.y;
+                    const distSq = dx * dx + dy * dy;
+
+                    if (distSq < CONNECTION_DIST_SQ) {
+                        const opacity = (1 - distSq / CONNECTION_DIST_SQ) * 0.12;
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(255,255,255,${opacity})`;
+                        ctx.moveTo(a.x, a.y);
+                        ctx.lineTo(b.x, b.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Draw mouse connections
+            if (mouse.x !== null) {
+                for (let i = 0; i < len; i++) {
+                    const p = particles[i];
+                    const dx = p.x - mouse.x;
+                    const dy = p.y - mouse.y;
+                    const distSq = dx * dx + dy * dy;
+
+                    if (distSq < MOUSE_RADIUS_SQ) {
+                        const opacity = (1 - distSq / MOUSE_RADIUS_SQ) * 0.3;
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(255,255,255,${opacity})`;
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(mouse.x, mouse.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Draw particles
+            for (let i = 0; i < len; i++) {
+                const p = particles[i];
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255,255,255,${p.o})`;
+                ctx.fill();
+            }
+
+            animId = requestAnimationFrame(animate);
+        }
+
+        // Subtle parallax on title
+        function updateTitleParallax(x, y) {
+            const cx = width / 2;
+            const cy = height / 2;
+            const ox = ((x - cx) / cx) * -6;
+            const oy = ((y - cy) / cy) * -4;
+            title.style.transform = `translate(calc(-50% + ${ox}px), calc(-50% + ${oy}px))`;
+        }
+
+        function resetTitleParallax() {
+            title.style.transform = 'translate(-50%, -50%)';
+        }
+
+        // Events
+        window.addEventListener('resize', () => {
+            resize();
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+            updateTitleParallax(e.clientX, e.clientY);
+        });
+
+        window.addEventListener('mouseleave', () => {
+            mouse.x = null;
+            mouse.y = null;
+            resetTitleParallax();
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            const t = e.touches[0];
+            mouse.x = t.clientX;
+            mouse.y = t.clientY;
+        }, { passive: true });
+
+        window.addEventListener('touchend', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        init();
+        animate();
+    </script>
+</body>
+</html>
