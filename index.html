@@ -138,8 +138,8 @@
             width: 90%;
             max-width: 420px;
             padding: 2.5rem;
-            background: rgba(10, 10, 10, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(18, 18, 18, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 2px;
             transform: translateY(20px);
             transition: transform 0.3s ease;
@@ -168,7 +168,7 @@
         .modal-close {
             background: none;
             border: none;
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(255, 255, 255, 0.7);
             font-size: 1.2rem;
             cursor: pointer;
             padding: 0.25rem;
@@ -177,7 +177,7 @@
         }
 
         .modal-close:hover {
-            color: rgba(255, 255, 255, 0.7);
+            color: #fff;
         }
 
         .form-group {
@@ -187,8 +187,8 @@
         .form-group input,
         .form-group textarea {
             width: 100%;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.35);
             border-radius: 2px;
             padding: 0.75rem 1rem;
             color: #fff;
@@ -202,12 +202,12 @@
 
         .form-group input::placeholder,
         .form-group textarea::placeholder {
-            color: rgba(255, 255, 255, 0.55);
+            color: rgba(255, 255, 255, 0.5);
         }
 
         .form-group input:focus,
         .form-group textarea:focus {
-            border-color: rgba(255, 255, 255, 0.5);
+            border-color: rgba(255, 255, 255, 0.6);
         }
 
         .form-group textarea {
@@ -217,11 +217,11 @@
 
         .form-submit {
             width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.35);
             border-radius: 2px;
             padding: 0.75rem;
-            color: rgba(255, 255, 255, 0.9);
+            color: #fff;
             font-family: 'IBM Plex Mono', monospace;
             font-weight: 300;
             font-size: 0.75rem;
@@ -233,9 +233,9 @@
         }
 
         .form-submit:hover {
-            background: rgba(255, 255, 255, 0.14);
+            background: rgba(255, 255, 255, 0.18);
             color: #fff;
-            border-color: rgba(255, 255, 255, 0.4);
+            border-color: rgba(255, 255, 255, 0.5);
         }
 
         .form-submit:disabled {
@@ -483,7 +483,7 @@
             status.textContent = '';
             status.className = 'form-status';
 
-            fetch('https://formsubmit.co/ajax/rkrane@rkrane.com', {
+            fetch('https://formsubmit.co/ajax/rangly06@gmail.com', {
                 method: 'POST',
                 headers: { 'Accept': 'application/json' },
                 body: data
