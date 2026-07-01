@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["P9ZXADV42A.com.ryankrane.stepmax"],
+        "components": [
+          { "/": "/join", "comment": "Matches /join with any query string (?code=...)" },
+          { "/": "/join/*", "comment": "Matches /join/CODE path form" }
+        ]
+      }
+    ]
+  }
+}
