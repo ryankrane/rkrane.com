@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <title>RK Labs</title>
-    <meta name="description" content="RK Labs">
+    <meta name="description" content="RK Labs, LLC makes the iPhone apps Step Scroll, Sales Wizard and Morning Proof.">
     <meta name="theme-color" content="#000000">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23000'/><text x='50' y='68' font-size='52' fill='white' text-anchor='middle' font-family='monospace' font-weight='300'>RK</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,12 +48,20 @@
             z-index: 1;
         }
 
-        .title {
+        .stage {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            inset: 0;
             z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(2.75rem, 7vh, 4.5rem);
+            pointer-events: none;
+        }
+        .title {
+            position: relative;
+            padding-left: 0.35em; /* balances the trailing letter-spacing so the word sits centred */
             color: #fff;
             font-family: 'IBM Plex Mono', monospace;
             font-weight: 300;
@@ -113,152 +121,79 @@
             color: rgba(255, 255, 255, 0.7);
         }
 
-        /* Contact Modal */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 100;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+        .apps {
             display: flex;
-            align-items: center;
             justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
+            gap: clamp(1.75rem, 6vw, 3.25rem);
+            list-style: none;
             pointer-events: auto;
+            animation: arrive 1.2s 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
         }
-
-        .modal {
-            width: 90%;
-            max-width: 420px;
-            padding: 2.5rem;
-            background: rgba(22, 22, 22, 0.98);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 2px;
-            transform: translateY(20px);
-            transition: transform 0.3s ease;
+        @keyframes arrive {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: none; }
         }
-
-        .modal-overlay.active .modal {
-            transform: translateY(0);
-        }
-
-        .modal-header {
+        .app {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .modal-title {
-            font-family: 'IBM Plex Mono', monospace;
-            font-weight: 300;
-            font-size: 0.75rem;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            color: #fff;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 0.25rem;
-            line-height: 1;
-            transition: color 0.2s ease;
-        }
-
-        .modal-close:hover {
-            color: #fff;
-        }
-
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 2px;
-            padding: 0.75rem 1rem;
-            color: #fff;
-            font-family: 'IBM Plex Mono', monospace;
-            font-weight: 300;
-            font-size: 0.8rem;
-            letter-spacing: 0.05em;
+            gap: 0.9rem;
+            text-decoration: none;
             outline: none;
-            transition: border-color 0.2s ease;
         }
-
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-            color: rgba(255, 255, 255, 0.45);
+        .app img {
+            display: block;
+            width: clamp(64px, 17vw, 84px);
+            height: clamp(64px, 17vw, 84px);
+            border-radius: 22.5%;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 12px 32px rgba(0, 0, 0, 0.6);
+            filter: brightness(0.92);
+            transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.35s ease, box-shadow 0.35s ease;
         }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            border-color: rgba(255, 255, 255, 0.65);
-        }
-
-        .form-group textarea {
-            resize: none;
-            height: 120px;
-        }
-
-        .form-submit {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 2px;
-            padding: 0.75rem;
-            color: #fff;
+        .app span {
             font-family: 'IBM Plex Mono', monospace;
             font-weight: 300;
-            font-size: 0.75rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-top: 0.5rem;
+            font-size: 0.72rem;
+            letter-spacing: 0.04em;
+            color: rgba(255, 255, 255, 0.55);
+            white-space: nowrap;
+            transition: color 0.35s ease;
         }
-
-        .form-submit:hover {
-            background: rgba(255, 255, 255, 0.18);
+        .app:hover img,
+        .app:focus-visible img {
+            transform: translateY(-3px);
+            filter: brightness(1);
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.22), 0 16px 40px rgba(0, 0, 0, 0.7);
+        }
+        .app:hover span,
+        .app:focus-visible span {
             color: #fff;
-            border-color: rgba(255, 255, 255, 0.5);
         }
-
-        .form-submit:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
+        .app:focus-visible img {
+            box-shadow: 0 0 0 2px #fff, 0 16px 40px rgba(0, 0, 0, 0.7);
         }
-
-        .form-status {
-            text-align: center;
-            font-family: 'IBM Plex Mono', monospace;
-            font-weight: 300;
-            font-size: 0.7rem;
-            letter-spacing: 0.15em;
-            margin-top: 1rem;
-            min-height: 1.2em;
+        @media (prefers-reduced-motion: reduce) {
+            .apps { animation: none; }
+            .app img { transition: none; }
+            .title { animation: none; }
         }
-
-        .form-status.success {
-            color: rgba(255, 255, 255, 0.5);
+        .credit {
+            display: flex;
+            gap: 2.5rem;
+            text-transform: none;
+            letter-spacing: 0.06em;
         }
-
-        .form-status.error {
-            color: rgba(255, 100, 100, 0.6);
+        .credit .contact {
+            color: inherit;
+            text-decoration: none;
+            outline: none;
+        }
+        .credit .contact:focus-visible {
+            color: #fff;
+            text-decoration: underline;
+        }
+        .credit .contact:hover {
+            color: rgba(255, 255, 255, 0.85);
         }
     </style>
 </head>
@@ -273,32 +208,16 @@
     <canvas id="particles"></canvas>
     <div class="vignette"></div>
     <div class="grain"></div>
-    <div class="title">RK Labs</div>
-    <div class="credit" onclick="openModal()">Ryan Krane</div>
+    <main class="stage">
+        <h1 class="title">RK Labs</h1>
+        <ul class="apps">
+            <li><a class="app" href="https://apps.apple.com/us/app/step-scroll-earn-screen-time/id6791864617"><img src="icons/step-scroll.png" alt="" width="84" height="84"><span>Step Scroll</span></a></li>
+            <li><a class="app" href="https://apps.apple.com/us/app/sales-wizard/id6758815392"><img src="icons/sales-wizard.png" alt="" width="84" height="84"><span>Sales Wizard</span></a></li>
+            <li><a class="app" href="https://apps.apple.com/us/app/morning-proof/id6757691737"><img src="icons/morning-proof.png" alt="" width="84" height="84"><span>Morning Proof</span></a></li>
+        </ul>
+    </main>
+    <footer class="credit"><span>&copy; 2026 RK Labs, LLC</span><a class="contact" href="mailto:rkrane@rkrane.com">rkrane@rkrane.com</a></footer>
 
-    <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
-        <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">Get in touch</span>
-                <button class="modal-close" onclick="closeModal()">&times;</button>
-            </div>
-            <form id="contactForm" onsubmit="submitForm(event)">
-                <input type="hidden" name="_captcha" value="false">
-                <input type="hidden" name="_template" value="basic">
-                <div class="form-group">
-                    <input type="text" name="name" placeholder="Name" required>
-                </div>
-                <div class="form-group">
-                    <input type="email" name="email" placeholder="Email" required>
-                </div>
-                <div class="form-group">
-                    <textarea name="message" placeholder="Message" required></textarea>
-                </div>
-                <button type="submit" class="form-submit" id="submitBtn">Send</button>
-                <div class="form-status" id="formStatus"></div>
-            </form>
-        </div>
-    </div>
 
     <script>
         const canvas = document.getElementById('particles');
@@ -417,11 +336,11 @@
             const cy = height / 2;
             const ox = ((x - cx) / cx) * -6;
             const oy = ((y - cy) / cy) * -4;
-            title.style.transform = `translate(calc(-50% + ${ox}px), calc(-50% + ${oy}px))`;
+            title.style.transform = `translate(${ox}px, ${oy}px)`;
         }
 
         function resetTitleParallax() {
-            title.style.transform = 'translate(-50%, -50%)';
+            title.style.transform = 'none';
         }
 
         // Events
@@ -455,59 +374,6 @@
         init();
         animate();
 
-        // Contact modal
-        const overlay = document.getElementById('modalOverlay');
-
-        function openModal() {
-            overlay.classList.add('active');
-        }
-
-        function closeModal() {
-            overlay.classList.remove('active');
-            document.getElementById('formStatus').textContent = '';
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
-        });
-
-        function submitForm(e) {
-            e.preventDefault();
-            const form = document.getElementById('contactForm');
-            const btn = document.getElementById('submitBtn');
-            const status = document.getElementById('formStatus');
-            const data = new FormData(form);
-
-            btn.disabled = true;
-            btn.textContent = 'Sending...';
-            status.textContent = '';
-            status.className = 'form-status';
-
-            fetch('https://formsubmit.co/ajax/rkrane@rkrane.com', {
-                method: 'POST',
-                headers: { 'Accept': 'application/json' },
-                body: data
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    status.textContent = 'Message sent.';
-                    status.className = 'form-status success';
-                    form.reset();
-                    setTimeout(closeModal, 2000);
-                } else {
-                    throw new Error();
-                }
-            })
-            .catch(() => {
-                status.textContent = 'Something went wrong. Try again.';
-                status.className = 'form-status error';
-            })
-            .finally(() => {
-                btn.disabled = false;
-                btn.textContent = 'Send';
-            });
-        }
     </script>
 </body>
 </html>
